@@ -374,10 +374,74 @@ setTimeout(() => {
         }, 1500);
     }
 
-    function downloadVideo() {
-        alert('Backend AI processing coming next! The frontend is ready.');
+<script>
+const API_URL = "https://unvillainously-armlike-rashida.ngrok-free.dev";
+
+function startProcessing(input) {
+    if (!input.files || !input.files[0]) return;
+    const file = input.files[0];
+    const formData = new FormData();
+    formData.append('video', file);
+    document.querySelector('.upload-box').style.display = 'none';
+    document.getElementById('progressSection').style.display = 'block';
+    const steps = ['step1','step2','step3','step4','step5'];
+    const progressBar = document.getElementById('progressBar');
+    let currentStep = 0;
+    steps.forEach(s => document.getElementById(s).className = 'step');
+    const stepInterval = setInterval(() => {
+        if (currentStep > 0) {
+            document.getElementById(steps[currentStep-1]).className = 'step done';
+            document.getElementById(steps[currentStep-1]).querySelector('.step-icon').innerHTML = '✓';
+        }
+        if (currentStep < steps.length) {
+            document.getElementById(steps[currentStep]).className = 'step active';
+            currentStep++;
+        } else {
+            clearInterval(stepInterval);
+        }
+    }, 2000);
+    fetch(${API_URL}/upload, {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        const jobId = data.job_id;
+        window._currentJobId = jobId;
+        pollStatus(jobId, progressBar);
+    })
+    .catch(err => {
+        alert('Upload failed. Make sure Colab is running.');
+        console.error(err);
+    });
+}
+
+function pollStatus(jobId, progressBar) {
+    const interval = setInterval(() => {
+        fetch(${API_URL}/status/${jobId})
+        .then(res => res.json())
+        .then(data => {
+            progressBar.style.width = data.progress + '%';
+            if (data.status === 'done') {
+                clearInterval(interval);
+                document.getElementById('progressSection').style.display = 'none';
+                document.getElementById('resultSection').style.display = 'block';
+            } else if (data.status === 'error') {
+                clearInterval(interval);
+                alert('Error: ' + data.message);
+            }
+        });
+    }, 2000);
+}
+
+function downloadVideo() {
+    if (window._currentJobId) {
+        window.location.href = ${API_URL}/download/${window._currentJobId};
     }
+}
+</script>
 </script>
 
 </body>
+
 </html>
