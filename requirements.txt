@@ -3,4 +3,3 @@ flask cors
 opencv python-headless
 numpy
 gunicorn
-
