@@ -6,7 +6,7 @@ import threading
 import uuid
 import os
 
-app = Flask(name)
+app = Flask(__name__)
 CORS(app)
 jobs = {}
 
@@ -82,13 +82,6 @@ def download(job_id):
 def home():
     return jsonify({'status': 'ContentAI server is running!'})
 
-if name == 'main':
-    port = int(os.environ.get('PORT', 5000))
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 8080))
     app.run(host='0.0.0.0', port=port)
-
----
-
-
-
-**File 3 — `Procfile`** (no extension):
-web: python main.py
