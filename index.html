@@ -1,4 +1,3 @@
-Naod Tesfaye, [3/9/2026 12:30 AM]
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -133,9 +132,7 @@ Naod Tesfaye, [3/9/2026 12:30 AM]
         .step {
             display: flex;
             align-items: center;
-
-Naod Tesfaye, [3/9/2026 12:30 AM]
-gap: 12px;
+            gap: 12px;
             margin-bottom: 16px;
             color: #666;
             font-size: 15px;
@@ -263,7 +260,6 @@ gap: 12px;
     </div>
 </div>
 
-Naod Tesfaye, [3/9/2026 12:30 AM]
 <div class="upload-section">
     <div class="upload-box" onclick="document.getElementById('fileInput').click()">
         <div class="upload-icon">🎬</div>
@@ -340,58 +336,28 @@ Naod Tesfaye, [3/9/2026 12:30 AM]
 </footer>
 
 <script>
-    function startProcessing(input) {
-        if (!input.files || !input.files[0]) return;
-
-        const file = input.files[0];
-        document.querySelector('.upload-box').style.display = 'none';
-        document.getElementById('progressSection').style.display = 'block';
-
-        const steps = ['step1', 'step2', 'step3', 'step4', 'step5'];
-        const progressBar = document.getElementById('progressBar');
-        let currentStep = 0;
-
-        steps.forEach(s => document.getElementById(s).className = 'step');
-
-        const interval = setInterval(() => {
-            if (currentStep > 0) {
-                document.getElementById(steps[currentStep - 1]).className = 'step done';
-                document.getElementById(steps[currentStep - 1]).querySelector('.step-icon').innerHTML = '✓';
-            }
-            if (currentStep < steps.length) {
-                document.getElementById(steps[currentStep]).className = 'step active';
-                progressBar.style.width = ((currentStep + 1) / steps.length * 100) + '%';
-                currentStep++;
-            } else {
-                clearInterval(interval);
-
-Naod Tesfaye, [3/9/2026 12:30 AM]
-setTimeout(() => {
-                    document.getElementById('progressSection').style.display = 'none';
-                    document.getElementById('resultSection').style.display = 'block';
-                }, 500);
-            }
-        }, 1500);
-    }
-
-<script>
-const API_URL = "https://unvillainously-armlike-rashida.ngrok-free.dev";
+const API_URL = window.location.origin;
 
 function startProcessing(input) {
     if (!input.files || !input.files[0]) return;
+    
     const file = input.files[0];
     const formData = new FormData();
     formData.append('video', file);
+    
     document.querySelector('.upload-box').style.display = 'none';
     document.getElementById('progressSection').style.display = 'block';
-    const steps = ['step1','step2','step3','step4','step5'];
+    
+    const steps = ['step1', 'step2', 'step3', 'step4', 'step5'];
     const progressBar = document.getElementById('progressBar');
     let currentStep = 0;
+    
     steps.forEach(s => document.getElementById(s).className = 'step');
+    
     const stepInterval = setInterval(() => {
         if (currentStep > 0) {
-            document.getElementById(steps[currentStep-1]).className = 'step done';
-            document.getElementById(steps[currentStep-1]).querySelector('.step-icon').innerHTML = '✓';
+            document.getElementById(steps[currentStep - 1]).className = 'step done';
+            document.getElementById(steps[currentStep - 1]).querySelector('.step-icon').innerHTML = '✓';
         }
         if (currentStep < steps.length) {
             document.getElementById(steps[currentStep]).className = 'step active';
@@ -400,7 +366,8 @@ function startProcessing(input) {
             clearInterval(stepInterval);
         }
     }, 2000);
-    fetch(${API_URL}/upload, {
+    
+    fetch(`${API_URL}/upload`, {
         method: 'POST',
         body: formData
     })
@@ -411,14 +378,14 @@ function startProcessing(input) {
         pollStatus(jobId, progressBar);
     })
     .catch(err => {
-        alert('Upload failed. Make sure Colab is running.');
+        alert('Upload failed: ' + err.message);
         console.error(err);
     });
 }
 
 function pollStatus(jobId, progressBar) {
     const interval = setInterval(() => {
-        fetch(${API_URL}/status/${jobId})
+        fetch(`${API_URL}/status/${jobId}`)
         .then(res => res.json())
         .then(data => {
             progressBar.style.width = data.progress + '%';
@@ -436,12 +403,10 @@ function pollStatus(jobId, progressBar) {
 
 function downloadVideo() {
     if (window._currentJobId) {
-        window.location.href = ${API_URL}/download/${window._currentJobId};
+        window.location.href = `${API_URL}/download/${window._currentJobId}`;
     }
 }
 </script>
-</script>
 
 </body>
-
-</html>
+</html> 
