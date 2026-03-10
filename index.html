@@ -336,7 +336,7 @@
 </footer>
 
 <script>
-const API_URL = window.location.origin;
+const API_URL = "https://unvillainously-armlike-rashida.ngrok-free.dev";
 
 function startProcessing(input) {
     if (!input.files || !input.files[0]) return;
@@ -367,10 +367,13 @@ function startProcessing(input) {
         }
     }, 2000);
     
-    fetch(`${API_URL}/upload`, {
-        method: 'POST',
-        body: formData
-    })
+fetch(`${API_URL}/upload`, {
+    method: 'POST',
+    headers: {
+        'ngrok-skip-browser-warning': 'true'
+    },
+    body: formData
+})
     .then(res => res.json())
     .then(data => {
         const jobId = data.job_id;
@@ -385,8 +388,11 @@ function startProcessing(input) {
 
 function pollStatus(jobId, progressBar) {
     const interval = setInterval(() => {
-        fetch(`${API_URL}/status/${jobId}`)
-        .then(res => res.json())
+fetch(`${API_URL}/status/${jobId}`, {
+    headers: {
+        'ngrok-skip-browser-warning': 'true'
+    }
+})        .then(res => res.json())
         .then(data => {
             progressBar.style.width = data.progress + '%';
             if (data.status === 'done') {
@@ -410,3 +416,4 @@ function downloadVideo() {
 
 </body>
 </html> 
+
